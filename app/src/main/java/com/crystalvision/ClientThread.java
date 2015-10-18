@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Created by kseniaselezneva on 15/10/15.
  */
-public class ClientThread {
+public class ClientThread extends Thread {
     private volatile Communicator communicator;
 
     private final BluetoothSocket socket;
@@ -25,7 +25,7 @@ public class ClientThread {
         BluetoothSocket tmp = null;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         try {
-            tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(MainActivity.UUID));
+            tmp = device.createRfcommSocketToServiceRecord(UUID.fromString(MainActivity.MYUUID));
         } catch (IOException e) {
             Log.d("ClientThread", e.getLocalizedMessage());
         }
