@@ -140,7 +140,6 @@ public class BluetoothActivity extends ActionBarActivity implements View.OnClick
                 // When clicked, show a toast with the TextView text
                 selectedFromList = (String) (listView.getItemAtPosition(position));
 		    		/*Debugging
-		    		Toast.makeText(getApplicationContext(), selectedFromList,Toast.LENGTH_SHORT).show();*/
                 String[] parts = selectedFromList.split(" ");
                 selectedFromListName = parts[0];
                 selectedFromListAddress = parts[1];
@@ -148,12 +147,25 @@ public class BluetoothActivity extends ActionBarActivity implements View.OnClick
                 mBluetoothAdapter.cancelDiscovery();
                 ConnectThread ct = new ConnectThread(selectedDevice);
                 ct.start();
+
+
+
+
                 //ConnectThread ConnectThread = new ConnectThread(selectedDevice);
                 //connectDevice();
 		    		/* Debug Help
 		    		Toast.makeText(getApplicationContext(), selectedFromListName,Toast.LENGTH_SHORT).show();
 		    		Toast.makeText(getApplicationContext(), selectedFromListAddress,Toast.LENGTH_SHORT).show();
 		    		Toast.makeText(getApplicationContext(),selectedDevice.getAddress(), Toast.LENGTH_SHORT).show();*/
+                String[] parts = selectedFromList.split("  ");
+                selectedFromListName = parts[0];
+                selectedFromListAddress = parts[1];
+
+                Log.i(TAG, "selectedFromListName = " + selectedFromListName);
+                Log.i(TAG, "selectedFromListAddress = " + selectedFromListAddress);
+                selectedDevice(selectedFromListAddress);
+
+
             }
         });
 
@@ -206,12 +218,12 @@ public class BluetoothActivity extends ActionBarActivity implements View.OnClick
     }
 
     public void displayCominedDevices(){
-   //     displayPairedDevices();
+        displayPairedDevices();
         displayDetectedDevices();
         mArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,removeDuplicates(unpairedDevicesList,pairedDevicesList));
         listView.setAdapter(mArrayAdapter);
 
-        connect();
+      //  connect();
     }
 
     OutputStream mmOutStream;
@@ -242,12 +254,17 @@ public class BluetoothActivity extends ActionBarActivity implements View.OnClick
         }
     }
 
-    public BluetoothDevice selectedDevice(String deviceAddress){
+//    public BluetoothDevice selectedDevice(String deviceAddress){
+    public void selectedDevice(String deviceAddress){
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         BluetoothDevice device;
-    //    device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
-        device = mBluetoothAdapter.getRemoteDevice("8C:2D:AA:37:37:F0");
-        return device;
+        Log.i(TAG, "selectedDevice:deviceAddress -> " + deviceAddress);
+    //    device = mBluetoothAdapter.getRemoteDevice(deviceAddress.trim());
+
+        crystalDevice = mBluetoothAdapter.getRemoteDevice(deviceAddress.trim());
+
+        connect();
+//        return crystalDevice;
     }
 
     @SuppressLint("NewApi")
@@ -308,7 +325,7 @@ public class BluetoothActivity extends ActionBarActivity implements View.OnClick
             // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
                 // Add the name and address to an array adapter to show in a ListView
-                String s = " ";
+                String s = "  ";
                 String deviceName = device.getName();
                 String deviceAddress = device.getAddress();
                 pairedDevicesList.add(deviceName + s + deviceAddress +" \n");
@@ -390,6 +407,7 @@ public class BluetoothActivity extends ActionBarActivity implements View.OnClick
                 Toast.makeText(getApplicationContext(), "Searching for devices, please wait... ",Toast.LENGTH_SHORT).show();
                 // Checks for known paired devices
              //   pairedDevices = new HashSet<>();
+                pairedDevices = new HashSet<>();
                 pairedDevices = mBluetoothAdapter.getBondedDevices();
 
                 try {
