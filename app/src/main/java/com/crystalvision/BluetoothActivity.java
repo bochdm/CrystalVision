@@ -257,7 +257,6 @@ public class BluetoothActivity extends ActionBarActivity implements View.OnClick
 //    public BluetoothDevice selectedDevice(String deviceAddress){
     public void selectedDevice(String deviceAddress){
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothDevice device;
         Log.i(TAG, "selectedDevice:deviceAddress -> " + deviceAddress);
     //    device = mBluetoothAdapter.getRemoteDevice(deviceAddress.trim());
 
